@@ -120,6 +120,7 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import './App.css';  // Import the CSS file
 
 function App() {
   const [messages, setMessages] = useState([
@@ -162,7 +163,7 @@ function App() {
         {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer YOUR_OPENROUTER_API_KEY'
+            'Authorization': 'Bearer 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'
           },
         }
       );
@@ -181,38 +182,30 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
-      <div className="w-full max-w-2xl bg-white shadow-lg rounded-xl p-6 flex flex-col">
-        <h1 className="text-2xl font-bold text-center mb-4 text-blue-600">DNA Chatbot (AI)</h1>
-
-        <div className="flex-1 overflow-y-auto h-[400px] mb-4 p-3 space-y-3 bg-gray-50 rounded border">
+    <div className="app">
+      <div className="chat-container">
+        <h1 className="title">DNA Chatbot (AI)</h1>
+        <div className="chat-box">
           {messages.map((msg, index) => (
             <div
               key={index}
-              className={`max-w-[75%] px-4 py-2 rounded-lg text-sm whitespace-pre-line ${
-                msg.sender === 'user'
-                  ? 'ml-auto bg-blue-500 text-white'
-                  : 'mr-auto bg-green-200 text-gray-800'
-              }`}
+              className={`message ${msg.sender === 'user' ? 'user-message' : 'bot-message'}`}
             >
               {msg.text}
             </div>
           ))}
-          {loading && <div className="text-xs text-gray-400">Typing...</div>}
+          {loading && <div className="loading">Typing...</div>}
         </div>
 
-        <div className="flex gap-2">
+        <div className="input-area">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             placeholder="Type your message..."
-            className="flex-1 border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="input-field"
           />
-          <button
-            onClick={handleSend}
-            className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition"
-          >
+          <button onClick={handleSend} className="send-button">
             Send
           </button>
         </div>
@@ -222,4 +215,3 @@ function App() {
 }
 
 export default App;
-
