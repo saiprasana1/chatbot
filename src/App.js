@@ -163,13 +163,16 @@ function App() {
         {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer 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'
+            'Authorization': 'Bearer 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'
           },
         }
       );
+    
+      
 
       const botReply = response.data.choices[0].message.content;
       setMessages((prev) => [...prev, { sender: 'bot', text: botReply }]);
+        console.log(botReply);
     } catch (err) {
       console.error(err);
       setMessages((prev) => [
