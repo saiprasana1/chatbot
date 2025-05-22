@@ -142,9 +142,9 @@ function App() {
 
     try {
       const response = await axios.post(
-        'https://openrouter.ai/api/v1/chat/completions',
+        'https://api.groq.com/openai/v1/chat/completions',
         {
-          model: 'openai/gpt-3.5-turbo',
+          model: 'llama-3.3-70b-versatile',
           messages: [
             {
               role: 'system',
@@ -154,6 +154,7 @@ function App() {
               role: m.sender === 'bot' ? 'assistant' : 'user',
               content: m.text,
             })),
+           
             {
               role: 'user',
               content: input,
@@ -162,8 +163,9 @@ function App() {
         },
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer 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'
+             'Authorization': 'Bearer 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',
+            'Content-Type': 'application/json'
+           
           },
         }
       );
