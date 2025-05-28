@@ -132,59 +132,128 @@ function App() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
+  // const handleSend = async () => {
+  //   if (!input.trim()) return;
 
-    const userMsg = { sender: 'user', text: input };
-    setMessages((prev) => [...prev, userMsg]);
-    setInput('');
-    setLoading(true);
+  //   const userMsg = { sender: 'user', text: input };
+  //   setMessages((prev) => [...prev, userMsg]);
+  //   setInput('');
+  //   setLoading(true);
 
-    try {
-      const response = await axios.post(
-        'https://api.groq.com/openai/v1/chat/completions',
-        {
-          model: 'llama-3.3-70b-versatile',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a helpful assistant that gives fitness food advice, meal plans, and cooking recipes.',
-            },
-            ...messages.map((m) => ({
-              role: m.sender === 'bot' ? 'assistant' : 'user',
-              content: m.text,
-            })),
+  //   try {
+  //     const response = await axios.post(
+  //       'https://api.groq.com/openai/v1/chat/completions',
+  //       {
+  //         model: 'llama-3.3-70b-versatile',
+  //         messages: [
+  //           {
+  //             role: 'system',
+  //             content: 'You are a helpful assistant that gives fitness food advice, meal plans, and cooking recipes.',
+  //           },
+  //           ...messages.map((m) => ({
+  //             role: m.sender === 'bot' ? 'assistant' : 'user',
+  //             content: m.text,
+  //           })),
            
-            {
-              role: 'user',
-              content: input,
-            },
-          ],
-        },
-        {
-          headers: {
-             'Authorization': 'Bearer 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',
-            'Content-Type': 'application/json'
+  //           {
+  //             role: 'user',
+  //             content: input,
+  //           },
+  //         ],
+  //       },
+  //       {
+  //         headers: {
+  //            'Authorization': 'Bearer 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',
+  //           'Content-Type': 'application/json'
            
-          },
-        }
-      );
+  //         },
+  //       }
+  //     );
     
       
 
-      const botReply = response.data.choices[0].message.content;
-      setMessages((prev) => [...prev, { sender: 'bot', text: botReply }]);
-        console.log(botReply);
-    } catch (err) {
-      console.error(err);
-      setMessages((prev) => [
-        ...prev,
-        { sender: 'bot', text: 'Oops! Something went wrong. Please try again.' },
-      ]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     const botReply = response.data.choices[0].message.content;
+  //     setMessages((prev) => [...prev, { sender: 'bot', text: botReply }]);
+  //       console.log(botReply);
+  //   } catch (err) {
+  //     console.error(err);
+  //     setMessages((prev) => [
+  //       ...prev,
+  //       { sender: 'bot', text: 'Oops! Something went wrong. Please try again.' },
+  //     ]);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+const handleSend = async () => {
+  if (!input.trim()) return;
+
+  const userMsg = { sender: 'user', text: input };
+  setMessages((prev) => [...prev, userMsg]);
+  setInput('');
+  
+  // Only allow diet-related keywords
+  const dietKeywords = [
+    'diet', 'meal', 'food', 'eat', 'nutrition', 'plan', 'calorie', 'recipe',
+    'cook', 'gain', 'lose', 'maintain', 'protein', 'snack', 'breakfast', 'lunch', 'dinner', 'weight'
+  ];
+  const isDietRelated = dietKeywords.some(keyword =>
+    input.toLowerCase().includes(keyword)
+  );
+
+  if (!isDietRelated) {
+    setMessages((prev) => [
+      ...prev,
+      { sender: 'bot', text: "I'm here to help with diet, food plans, or recipes only. Please ask something related to your meals or nutrition." }
+    ]);
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const response = await axios.post(
+      'https://api.groq.com/openai/v1/chat/completions',
+      {
+        model: 'llama-3.3-70b-versatile',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a helpful assistant that gives fitness food advice, meal plans, and cooking recipes. Only answer questions related to diet and food planning.',
+          },
+          ...messages.map((m) => ({
+            role: m.sender === 'bot' ? 'assistant' : 'user',
+            content: m.text,
+          })),
+          {
+            role: 'user',
+            content: input,
+          },
+        ],
+      },
+      {
+        headers: {
+          'Authorization': 'Bearer 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',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    const botReply = response.data.choices[0].message.content;
+    setMessages((prev) => [...prev, { sender: 'bot', text: botReply }]);
+    console.log(botReply);
+  } catch (err) {
+    console.error(err);
+    setMessages((prev) => [
+      ...prev,
+      { sender: 'bot', text: 'Oops! Something went wrong. Please try again.' },
+    ]);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="app">
