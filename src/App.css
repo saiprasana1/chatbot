@@ -33,7 +33,7 @@
 
 .message.bot {
   background-color: #e0f7fa;
-  color: #004d40;
+  color: #ffffff;
   text-align: left;
   margin-left: auto;
   align-self: flex-start;
@@ -41,7 +41,7 @@
 
 .message.user {
   background-color: #dcedc8;
-  color: #1b5e20;
+  color: #ffffff;
   text-align: right;
   margin-right: auto;
   align-self: flex-end;

@@ -163,7 +163,7 @@ function App() {
         },
         {
           headers: {
-             'Authorization': 'Bearer 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',
+             'Authorization': 'Bearer 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',
             'Content-Type': 'application/json'
            
           },
